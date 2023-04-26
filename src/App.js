@@ -1,23 +1,40 @@
-import logo from './logo.svg';
-import './App.css';
+import { useEffect, useState } from "react";
 
 function App() {
+  const [data, setData] = useState([]);
+  useEffect(() => {
+    const fetchedData = fetch("https://jsonplaceholder.typicode.com/todos")
+      .then((response) => response.json())
+      .then((json) => setData(json));
+  }, []);
+
+  const handleDelete = (id) => {
+    const renderedData = data.filter((d) => {
+      return d.id !== id;
+    });
+    setData(renderedData);
+  };
+
+  const renderedData = data.map((d) => {
+    return (
+      <div className="main-list" key={d.id}>
+        <ul>
+          <li>{d.title}</li>
+        </ul>
+        <img
+          onClick={() => {
+            handleDelete(d.id);
+          }}
+          src="https://cdn-icons-png.flaticon.com/512/3687/3687412.png"
+          alt=""
+        />
+      </div>
+    );
+  });
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Todos</h1>
+      <div>{renderedData}</div>
     </div>
   );
 }
